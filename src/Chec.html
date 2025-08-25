@@ -1,0 +1,23 @@
+   <!DOCTYPE html>
+   <html>
+   <head>
+   <script>
+    function validate(e){
+        e.preventDefault();
+       const input=document.getElementById("inp").value;
+       if(!input.includes('@')){
+           alert("INVALID EMAIL");
+       }  
+    }
+    </script>
+    </head>
+    
+    <body>
+    <div>
+    <form onsubmit="validate(event)">
+        <input type="text" id="inp" placeholder="Enter Email"></input>
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+    </body>
+    </html>
