@@ -1,70 +1,58 @@
-import React, { useState, useRef } from "react";
-import ReactDOM from "react-dom/client";
-import "./App.css";
+// App.js
+import React, { useState } from "react";
 
-function withLogger(WrappedComponent) {
-  return function EnhancedComponent(props) {
-    const logAction = (message) => console.log(message);
-    return <WrappedComponent {...props} logAction={logAction} />;
-  };
-}
+function App() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [error, setError] = useState("");
 
- 
-function NotesApp({ logAction }) {
-  const [notes, setNotes] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const noteInputRef = useRef();
-
-  const handleAddOrEditNote = () => {
-    const value = noteInputRef.current.value.trim();
-    if (!value) return;
-
-    if (editingIndex === null) {
-     
-      setNotes([...notes, value]);
-      logAction(`Note Added: ${value}`);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Simple admin verification
+    if (username === "admin" && password === "admin123") {
+      setIsLoggedIn(true);
     } else {
-      
-      const updatedNotes = [...notes];
-      updatedNotes[editingIndex] = value;
-      setNotes(updatedNotes);
-      logAction(`Note Edited: ${value}`);
-      setEditingIndex(null);
+      setError("Invalid username or password");
     }
-
-    noteInputRef.current.value = "";
-    noteInputRef.current.focus();
   };
 
-  const handleEditClick = (index) => {
-    noteInputRef.current.value = notes[index];
-    noteInputRef.current.focus();
-    setEditingIndex(index);
-  };
+  if (isLoggedIn) {
+    return <WelcomePage username={username} />;
+  }
 
   return (
-    <div style={{ padding: "20px", maxWidth: "400px", margin: "auto" }}>
-      <h2>Notes Taking App</h2>
-      <input ref={noteInputRef} type="text" placeholder="Enter note" />
-      <button onClick={handleAddOrEditNote}>
-        {editingIndex === null ? "Add Note" : "Update Note"}
-      </button>
-
-      <ul>
-        {notes.map((note, index) => (
-          <li key={index}>
-            {note}{" "}
-            <button onClick={() => handleEditClick(index)}>Edit</button>
-          </li>
-        ))}
-      </ul>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h2>Admin Login</h2>
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <br />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        <button type="submit">Login</button>
+      </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
 
+function WelcomePage({ username }) {
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>Welcome, {username}!</h1>
+      <p>You have successfully logged in.</p>
+    </div>
+  );
+}
 
-const NotesAppWithLogger = withLogger(NotesApp);
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<NotesAppWithLogger />);
-export default withLogger(NotesApp);
+export default App;
