@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Land with Plant</title>
+<style>
+  body { margin: 0; overflow: hidden; }
+</style>
+</head>
+<body>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
+
+// Scene and Camera
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87CEEB);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(3,3,5);
+camera.lookAt(0,0,0);
+
+// Renderer
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// Lights
+scene.add(new THREE.AmbientLight(0xffffff, 1));
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(5,5,5);
+scene.add(dirLight);
+
+// Green land (cube)
+const land = new THREE.Mesh(
+  new THREE.BoxGeometry(2,0.5,2),
+  new THREE.MeshLambertMaterial({color: 0x228B22})
+);
+land.position.y = 0.25;
+scene.add(land);
+
+// Small green plant (cone)
+const plant = new THREE.Mesh(
+  new THREE.ConeGeometry(0.2,0.5,8),
+  new THREE.MeshLambertMaterial({color:0x00ff00})
+);
+plant.position.y = 0.5;
+scene.add(plant);
+
+// Animate
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// Resize
+window.addEventListener('resize',()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
